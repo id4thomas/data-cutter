@@ -1,0 +1,34 @@
+{
+    "name": "example1",
+    "fields": [
+        {
+            "name": "items",
+            "specification": {
+                "dim": 1,
+                "dtype": "child"
+            }
+        }
+    ],
+    "custom_dtypes": [
+        {
+            "name": "child",
+            "fields": [
+                {
+                    "name": "item_bbox",
+                    "specification": {
+                        "dim": 0,
+                        "dtype": "bbox"
+                    }
+                },
+                {
+                    "name": "item_description",
+                    "specification": {
+                        "dim": 0,
+                        "dtype": "string",
+                        "pattern": "^[A-Za-z0-9 _-]{1,100}$"
+                    }
+                }
+            ]
+        }
+    ]
+}
