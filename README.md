@@ -5,6 +5,15 @@ Data extraction with LLM structured generation
 
 ## Usage
 ### SchemaModelMaker
+Dynamically makes pydantic model types 
+
+```python
+from data_cutter.model_maker import SchemaModelMaker
+
+config = SchemaConfig.model_validate(schema_config)
+model = SchemaModelMaker().make(config)
+```
+
 
 <table>
 <tr>
@@ -36,40 +45,44 @@ class Result(BaseModel):
 
 ```json
 {
-    "name": "Result",
-    "fields": [
+  "name": "Result",
+  "fields": [
+    {
+      "name": "items",
+      "specification": {
+        "dim": 1,
+        "dtype": "Item"
+      }
+    }
+  ],
+  "custom_dtypes": [
+    {
+      "name": "Item",
+      "fields": [
         {
-            "name": "items",
-            "specification": {"dim": 1, "dtype": "Item"}
-        }
-    ],
-    "custom_dtypes": [
+          "name": "value",
+          "specification": {
+            "dim": 0,
+            "dtype": "string"
+          }
+        },
         {
-            "name": "Item",
-            "fields": [
-                {
-                    "name": "value",
-                    "specification": {
-                        "dim": 0,
-                        "dtype": "string"
-                    }
-                },
-                {
-                    "name": "label",
-                    "specification": {
-                        "dim": 0,
-                        "dtype": "string",
-                        "allowed_values": ["a", "b"]
-                    }
-                }
-            ]
+          "name": "label",
+          "specification": {
+            "dim": 0,
+            "dtype": "string",
+            "allowed_values": ["a", "b"]
+          }
         }
-    ]
+      ]
+    }
+  ]
 }
 ```
 
 </td>
 </tr>
+</table>
 
 
 
