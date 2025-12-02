@@ -1,34 +1,31 @@
 {
-    "name": "Result",
+    "name": "example1",
     "fields": [
         {
             "name": "items",
             "specification": {
                 "dim": 1,
-                "dtype": "Item"
+                "dtype": "child"
             }
         }
     ],
     "custom_dtypes": [
         {
-            "name": "Item",
+            "name": "child",
             "fields": [
                 {
-                    "name": "value",
+                    "name": "item_bbox",
                     "specification": {
                         "dim": 0,
-                        "dtype": "string"
+                        "dtype": "bbox"
                     }
                 },
                 {
-                    "name": "label",
+                    "name": "item_description",
                     "specification": {
                         "dim": 0,
                         "dtype": "string",
-                        "allowed_values": [
-                            "a",
-                            "b"
-                        ]
+                        "pattern": "^[A-Za-z0-9 _-]{1,100}$"
                     }
                 }
             ]
