@@ -1,0 +1,30 @@
+name: "Document Processing Example"
+template_format: "f-string"
+templates:
+  - type: "single"
+    role: "user"
+    content:
+      type: "text"
+      content: "Extract all tables in {grammar} from given page images"
+      input_variables: ["grammar"]
+  # Iterable content message for multiple documents
+  # Each document has: 1 text "Document {document_title}" + iterable pages (text + image per page)
+  - type: "iterable"
+    role: "user"
+    input_key: "document_pages"  # Iterate over the document_pages list
+    contents:
+      - type: "static"
+        items:
+          - type: "text"
+            content: "Document Title: {document_title}"
+            input_variables:
+              - "document_title"
+      - type: "iterable"
+        input_key: "pages"  # Explicitly specify which variable to iterate over
+        items:
+          - type: "text"
+            content: "{page_no}"
+            input_variables:
+              - "page_no"
+          - type: "image"
+            input_name: "page_image"

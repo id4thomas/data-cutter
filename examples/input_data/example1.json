@@ -1,0 +1,35 @@
+{
+    "grammar": "html",
+    "document_pages": [
+        {
+            "document_title": "Invoice Q1 2024",
+            "pages": [
+                {
+                    "page_no": "Page 1",
+                    "page_image": "data:image/png;base64,invoice_q1_page1..."
+                },
+                {
+                    "page_no": "Page 2",
+                    "page_image": "data:image/png;base64,invoice_q1_page2..."
+                },
+                {
+                    "page_no": "Page 3",
+                    "page_image": "data:image/png;base64,invoice_q1_page3..."
+                }
+            ]
+        },
+        {
+            "document_title": "Contract Agreement",
+            "pages": [
+                {
+                    "page_no": "Page 1",
+                    "page_image": "data:image/png;base64,contract_page1..."
+                },
+                {
+                    "page_no": "Page 2",
+                    "page_image": "data:image/png;base64,contract_page2..."
+                }
+            ]
+        }
+    ]
+}
