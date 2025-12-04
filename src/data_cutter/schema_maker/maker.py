@@ -25,10 +25,6 @@ class SchemaModelMaker:
         # name -> CustomDTypeSpec
         self._custom_dtype_specs: Dict[str, CustomDTypeSpec] = {}
 
-    # ------------------------------------------------------------------ #
-    # dtype helpers
-    # ------------------------------------------------------------------ #
-
     def _get_primitive_dtype(self, dtype_name: str) -> Union[type, None]:
         """
         Map schema dtype strings to Python primitive types.
@@ -75,10 +71,6 @@ class SchemaModelMaker:
         self._building.remove(dtype_name)
         return model
 
-    # ------------------------------------------------------------------ #
-    # core model builder
-    # ------------------------------------------------------------------ #
-
     def _build_model(
         self,
         specification: Union[SchemaConfig, CustomDTypeSpec],
@@ -122,10 +114,6 @@ class SchemaModelMaker:
 
         model = create_model(model_name, __config__={"extra": "forbid"}, **model_spec_dict)
         return model
-
-    # ------------------------------------------------------------------ #
-    # public API
-    # ------------------------------------------------------------------ #
 
     def make(self, config: SchemaConfig) -> Type[BaseModel]:
         """

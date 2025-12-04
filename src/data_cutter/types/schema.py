@@ -7,7 +7,7 @@ Number = Union[int, float]
 class DtypeSpec(BaseModel):
     # your existing stuff
     dim: int = 0
-    dtype: str = "string"  # "string" | "number" | "integer" | "boolean" | "object" | "array" | "bbox" | custom name
+    dtype: str = "string"  # "string" | "number" | "integer" | "boolean" | "bbox" | custom name
     allowed_values: Optional[List[Any]] = None
     optional: bool = False
 
