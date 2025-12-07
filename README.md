@@ -1,7 +1,14 @@
 # data-cutter
 Data extraction with LLM structured generation
 
-<img src="./assets/header.png" width=50% height=50%>
+<img src="./assets/header.png" width=75% height=75%>
+
+## Concepts
+Each extraction is defined as `Tasks`s. A Task folder should contain the following information
+- Config (`config.json`)
+- Prompt Template (`prompt.yaml`): Contains instructions and input variable names used for this task
+- Output Schema Config (`output_schema.json`): Contains `SchemaConfig` needed to build response_format's json_schema
+
 
 ## Usage
 ### SchemaModelMaker
