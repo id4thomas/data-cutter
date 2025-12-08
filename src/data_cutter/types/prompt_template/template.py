@@ -29,11 +29,8 @@ ContentTemplate = Annotated[
     Field(discriminator="type")
 ]
 
-class ContentTemplateGroup(BaseModel):
-    """Base class for content template groups"""
-    pass
 
-class StaticContentTemplateGroup(ContentTemplateGroup):
+class StaticContentTemplateGroup(BaseModel):
     """Group of static content templates (no iteration)"""
     type: Literal["static"] = "static"
     items: List[ContentTemplate] = Field(
@@ -42,7 +39,7 @@ class StaticContentTemplateGroup(ContentTemplateGroup):
         min_length=1
     )
 
-class IterableContentTemplateGroup(ContentTemplateGroup):
+class IterableContentTemplateGroup(BaseModel):
     """Group of content templates that will be iterated over"""
     type: Literal["iterable"] = "iterable"
     items: List[Union[ContentTemplate, "IterableContentTemplateGroup"]] = Field(
@@ -58,7 +55,7 @@ class IterableContentTemplateGroup(ContentTemplateGroup):
 # Enable forward references for nested iteration
 IterableContentTemplateGroup.model_rebuild()
 
-ContentTemplateGroupUnion = Annotated[
+ContentTemplateGroup = Annotated[
     Union[
         StaticContentTemplateGroup,
         IterableContentTemplateGroup
@@ -75,7 +72,7 @@ class SingleContentMessageTemplate(BaseMessageTemplate):
 
 class IterableContentMessageTemplate(BaseMessageTemplate):
     type: Literal["iterable"] = "iterable"
-    contents: List[ContentTemplateGroupUnion] = Field(..., description="groups of templates (can be static or iterable)")
+    contents: List[ContentTemplateGroup] = Field(..., description="groups of templates (can be static or iterable)")
     input_key: Optional[str] = Field(
         None,
         description="The variable name containing the list to iterate over. If not specified, will iterate over the input_data list directly."

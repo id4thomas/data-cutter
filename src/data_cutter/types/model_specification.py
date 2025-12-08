@@ -4,7 +4,7 @@ from pydantic import BaseModel, Field
 Number = Union[int, float]
 
 
-class DtypeSpec(BaseModel):
+class DtypeSpecification(BaseModel):
     # your existing stuff
     dim: int = 0
     dtype: str = "string"  # "string" | "number" | "integer" | "boolean" | "bbox" | custom name
@@ -31,13 +31,13 @@ class DtypeSpec(BaseModel):
 
 class FieldSpec(BaseModel):
     name: str
-    specification: DtypeSpec
+    specification: DtypeSpecification
 
-class CustomDTypeSpec(BaseModel):
+class CustomDTypeSpecification(BaseModel):
     name: str
     fields: List[FieldSpec]
 
-class SchemaConfig(BaseModel):
+class ModelSpecification(BaseModel):
     name: str = Field(..., description="Name of schema model")
     fields: List[FieldSpec] = Field(..., description="attributes in the schema")
-    custom_dtypes: List[CustomDTypeSpec] = Field(default_factory=list)
+    custom_dtypes: List[CustomDTypeSpecification] = Field(default_factory=list)

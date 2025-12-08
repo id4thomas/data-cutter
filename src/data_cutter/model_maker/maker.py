@@ -3,7 +3,7 @@ from enum import Enum
 
 from pydantic import BaseModel, create_model
 
-from data_cutter.types.schema import (
+from data_cutter.types.model_specification import (
     DtypeSpec,
     CustomDTypeSpec,
     FieldSpec,
@@ -16,7 +16,7 @@ def create_dynamic_enum(name: str, values: List[Any]) -> Enum:
     return Enum(name, {str(v): v for v in values})
 
 
-class SchemaModelMaker:
+class PydanticModelMaker:
     def __init__(self):
         # cache of already-built custom dtype models
         self._custom_models: Dict[str, Type[BaseModel]] = {}
