@@ -4,28 +4,32 @@ Data extraction with LLM structured generation
 <img src="./assets/header.png" width=75% height=75%>
 
 ## Concepts
-Each extraction is defined as `Tasks`s. A Task folder should contain the following information
-- Config (`config.json`)
-- Prompt Template (`prompt.yaml`): Contains instructions and input variable names used for this task
-- Output Schema Config (`output_schema.json`): Contains `SchemaConfig` needed to build response_format's json_schema
+Each extraction is defined as `Tasks`s. A Task folder should contain the following information files.
 
+| Contents | File Name | Description |
+| --- | --- | --- |
+| Prompt Template | `prompt_template.yaml` | Contains instructions and input variable names used for this task | 
+| Generation Config | `generation_config.json` | Contains combinations of LLM & parameters |
+| Output Schema | `output_schema.json` | Contains `SchemaConfig` needed to build response_format's json_schema |
+| Input Example | `input_example.json` | (Optional) Example input dictionary for testing |
 
 ## Usage
 ### SchemaModelMaker
 Dynamically makes pydantic model types 
 
 ```python
-from data_cutter.model_maker import SchemaModelMaker
+from data_cutter.model_maker import PydanticModelMaker
+from data_cutter.types.model_specification import ModelSpecification
 
-config = SchemaConfig.model_validate(schema_config)
-model = SchemaModelMaker().make(config)
+spec = ModelSpecification.model_validate(specification_dict)
+model = PydanticModelMaker().make(spec)
 ```
 
 
 <table>
 <tr>
     <th>Pydantic Model</th>
-    <th>DataCutter Schema Config</th>
+    <th>DataCutter ModelSpecification</th>
 </tr>
 <tr>
 <td>
