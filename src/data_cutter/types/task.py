@@ -2,7 +2,7 @@ from typing import Any, Dict, Optional
 from pydantic import BaseModel, Field
 
 from data_cutter.types.generation_config import GenerationConfig
-from data_cutter.types.prompt_template import PromptTemplate
+from data_cutter.types.prompt import PromptTemplate
 from data_cutter.types.output_schema import OutputSchema, PlainOutputSchema
 
 class Task(BaseModel):

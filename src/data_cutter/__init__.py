@@ -1,4 +1,4 @@
-from .task_loader import TaskLoader
+from .loader import TaskLoader
 
 
 __all__ = [
