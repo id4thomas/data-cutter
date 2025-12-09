@@ -1,6 +1,6 @@
-from .maker import SchemaModelMaker
+from .maker import PydanticModelMaker
 
 
 __all__ = [
-    "SchemaModelMaker"
+    "PydanticModelMaker"
 ]

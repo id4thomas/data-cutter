@@ -4,10 +4,10 @@ from enum import Enum
 from pydantic import BaseModel, create_model
 
 from data_cutter.types.model_specification import (
-    DtypeSpec,
-    CustomDTypeSpec,
+    DtypeSpecification,
+    CustomDTypeSpecification,
     FieldSpec,
-    SchemaConfig,
+    ModelSpecification,
 )
 from .dtypes import Bbox
 
@@ -23,7 +23,7 @@ class PydanticModelMaker:
         # track what's currently being built to prevent recursive custom types
         self._building: set[str] = set()
         # name -> CustomDTypeSpec
-        self._custom_dtype_specs: Dict[str, CustomDTypeSpec] = {}
+        self._custom_dtype_specs: Dict[str, CustomDTypeSpecification] = {}
 
     def _get_primitive_dtype(self, dtype_name: str) -> Union[type, None]:
         """
@@ -73,7 +73,7 @@ class PydanticModelMaker:
 
     def _build_model(
         self,
-        specification: Union[SchemaConfig, CustomDTypeSpec],
+        specification: Union[ModelSpecification, CustomDTypeSpecification],
     ) -> Type[BaseModel]:
         """
         Build a Pydantic model from either:
@@ -85,7 +85,7 @@ class PydanticModelMaker:
         model_spec_dict: Dict[str, Any] = {}
         for field in specification.fields:
             field_name: str = field.name
-            field_spec: DtypeSpec = field.specification
+            field_spec: DtypeSpecification = field.specification
 
             # resolve base dtype
             dtype = self._get_dtype(field_spec.dtype)
@@ -115,7 +115,7 @@ class PydanticModelMaker:
         model = create_model(model_name, __config__={"extra": "forbid"}, **model_spec_dict)
         return model
 
-    def make(self, config: SchemaConfig) -> Type[BaseModel]:
+    def make(self, definition: ModelSpecification) -> Type[BaseModel]:
         """
         Build the root model from a SchemaConfig. This will also build
         any custom dtypes on demand.
@@ -126,8 +126,8 @@ class PydanticModelMaker:
         self._custom_dtype_specs = {}
 
         # register custom dtype specs
-        for custom_dtype in config.custom_dtypes:
+        for custom_dtype in definition.custom_dtypes:
             self._custom_dtype_specs[custom_dtype.name] = custom_dtype
 
         # build root model
-        return self._build_model(config)
+        return self._build_model(definition)
