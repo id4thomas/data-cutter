@@ -1,0 +1,42 @@
+name: "Document Processing Example"
+template_format: "f-string"
+messages:
+  - role: "user"
+    contents:
+      - type: "text"
+        input_variables: ["grammar"]
+        value: |-
+          Parse all tables (parsed_text) into {grammar} from given page images and extract their bounding boxes (bbox)
+          - parsed_text should be like "<table>...</table>"
+          Return in the following JSON
+          {{
+            "items": [
+              {{
+                "document_no": int,
+                "page_no": int,
+                "parsed_text": "{grammar} parsed table text",
+                "bbox": {{
+                  "x1": int,
+                  "y1": int,
+                  "x2": int,
+                  "y2": int
+                }}
+              }}
+            ]
+          }}
+  - role: "user"
+    contents:
+      - type: "iterable"
+        input_variable: "documents"
+        items:
+          - type: "text"
+            input_variables: ["title"]
+            value: "Document Title: {title}"
+          - type: "iterable"
+            input_variable: "pages"
+            items:
+              - type: "text"
+                input_variable: ["page_no"]
+                value: "Page {page_no}"
+              - type: "image"
+                input_name: "page_image"

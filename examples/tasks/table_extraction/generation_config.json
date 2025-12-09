@@ -1,0 +1,18 @@
+{
+    "options": {
+        "vllm-qwen3-vl-32b": {
+            "provider": "openai",
+            "model_name": "Qwen3-VL-32B-Instruct-FP8",
+            "parameters": {
+                "temperature": 0.6
+            }
+        },
+        "openai-gpt-5-mini": {
+            "provider": "openai",
+            "model_name": "gpt-5-mini",
+            "parameters": {
+                "reasoning_effort": "minimal"
+            }
+        }
+    }
+}

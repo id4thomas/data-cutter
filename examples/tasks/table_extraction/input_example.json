@@ -1,0 +1,23 @@
+{
+    "grammar": "html",
+    "documents": [
+        {
+            "title": "document1",
+            "pages": [
+                {
+                    "page_no": "1",
+                    "page_image": "https://ofasys-multimodal-wlcb-3-toshanghai.oss-cn-shanghai.aliyuncs.com/Qwen3VL/demo/omni_parsing/179729.jpg"
+                }
+            ]
+        },
+        {
+            "title": "document2",
+            "pages": [
+                {
+                    "page_no": "1",
+                    "page_image": "https://ofasys-multimodal-wlcb-3-toshanghai.oss-cn-shanghai.aliyuncs.com/Qwen3VL/demo/omni_parsing/179729.jpg"
+                }
+            ]
+        }
+    ]
+}

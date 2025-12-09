@@ -1,0 +1,50 @@
+{
+    "type": "structured",
+    "definition": {
+        "name": "Result",
+        "fields": [
+            {
+                "name": "items",
+                "specification": {
+                    "dim": 1,
+                    "dtype": "Table"
+                }
+            }
+        ],
+        "custom_dtypes": [
+            {
+                "name": "Table",
+                "fields": [
+                    {
+                        "name": "document_no",
+                        "specification": {
+                            "dim": 0,
+                            "dtype": "integer"
+                        }
+                    },
+                    {
+                        "name": "page_no",
+                        "specification": {
+                            "dim": 0,
+                            "dtype": "integer"
+                        }
+                    },
+                    {
+                        "name": "parsed_text",
+                        "specification": {
+                            "dim": 0,
+                            "dtype": "string"
+                        }
+                    },
+                    {
+                        "name": "bbox",
+                        "specification": {
+                            "dim": 0,
+                            "dtype": "bbox"
+                        }
+                    }
+                ]
+            }
+        ]
+    }
+}
