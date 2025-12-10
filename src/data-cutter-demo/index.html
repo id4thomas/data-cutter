@@ -1,0 +1,1286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Output Schema Builder</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 1rem;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            max-width: 1800px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+
+        .column {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .panel {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .panel h2 {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: #667eea;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 0.5rem;
+        }
+
+        .panel h3 {
+            font-size: 1.1rem;
+            margin: 1rem 0 0.5rem 0;
+            color: #764ba2;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.3rem;
+            font-weight: 500;
+            font-size: 0.9rem;
+            color: #555;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 0.6rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            font-family: inherit;
+            transition: border-color 0.2s;
+        }
+
+        input[type="text"]:focus,
+        input[type="number"]:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 60px;
+        }
+
+        .row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+        }
+
+        button {
+            padding: 0.7rem 1.2rem;
+            border: none;
+            border-radius: 4px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5568d3;
+        }
+
+        .btn-secondary {
+            background: #48bb78;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #38a169;
+        }
+
+        .btn-danger {
+            background: #f56565;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #e53e3e;
+        }
+
+        .btn-large {
+            width: 100%;
+            padding: 1rem;
+            font-size: 1.1rem;
+            margin-top: 1rem;
+        }
+
+        .btn-examples {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+
+        .btn-examples button {
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .status-message {
+            padding: 0.7rem;
+            border-radius: 4px;
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .status-success {
+            background: #c6f6d5;
+            color: #22543d;
+            border: 1px solid #9ae6b4;
+        }
+
+        .status-error {
+            background: #fed7d7;
+            color: #742a2a;
+            border: 1px solid #fc8181;
+        }
+
+        .code-output {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 1rem;
+            border-radius: 4px;
+            font-family: 'Courier New', Consolas, monospace;
+            font-size: 0.85rem;
+            overflow-x: auto;
+            min-height: 300px;
+            max-height: 500px;
+            overflow-y: auto;
+            white-space: pre;
+        }
+
+        .output-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .output-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .output-header h3 {
+            margin: 0;
+            font-size: 1rem;
+            color: #555;
+        }
+
+        .btn-copy {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.85rem;
+            background: #4299e1;
+            color: white;
+        }
+
+        .btn-copy:hover {
+            background: #3182ce;
+        }
+
+        .accordion {
+            border: 1px solid #e2e8f0;
+            border-radius: 4px;
+            margin-top: 0.5rem;
+        }
+
+        .accordion-header {
+            background: #f7fafc;
+            padding: 0.7rem;
+            cursor: pointer;
+            font-weight: 500;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .accordion-header:hover {
+            background: #edf2f7;
+        }
+
+        .accordion-content {
+            padding: 1rem;
+            display: none;
+        }
+
+        .accordion-content.active {
+            display: block;
+        }
+
+        .divider {
+            border: none;
+            border-top: 1px solid #e2e8f0;
+            margin: 1.5rem 0;
+        }
+
+        @media (max-width: 1200px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .state-view {
+            background: #f8f9fa;
+            border: 1px solid #e2e8f0;
+            border-radius: 4px;
+            padding: 1rem;
+            margin-top: 1rem;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .state-view h4 {
+            font-size: 0.95rem;
+            color: #667eea;
+            margin-bottom: 0.7rem;
+            font-weight: 600;
+        }
+
+        .state-item {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 4px;
+            padding: 0.7rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            transition: all 0.2s;
+        }
+
+        .state-item:hover {
+            border-color: #cbd5e0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .state-item-content {
+            flex: 1;
+        }
+
+        .state-item-name {
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 0.2rem;
+        }
+
+        .state-item-details {
+            font-size: 0.85rem;
+            color: #718096;
+        }
+
+        .state-item-fields {
+            font-size: 0.8rem;
+            color: #a0aec0;
+            margin-top: 0.3rem;
+            padding-left: 1rem;
+        }
+
+        .btn-delete {
+            background: #fc8181;
+            color: white;
+            padding: 0.3rem 0.6rem;
+            font-size: 0.8rem;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-delete:hover {
+            background: #f56565;
+        }
+
+        .empty-state {
+            text-align: center;
+            color: #a0aec0;
+            padding: 2rem 1rem;
+            font-size: 0.9rem;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            overflow-y: auto;
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .modal-content {
+            background-color: white;
+            border-radius: 8px;
+            padding: 2rem;
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            color: #667eea;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #718096;
+            cursor: pointer;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-close:hover {
+            color: #2d3748;
+        }
+
+        .btn-add {
+            background: #48bb78;
+            color: white;
+            padding: 0.8rem 1.5rem;
+            margin-top: 0.5rem;
+            width: 100%;
+        }
+
+        .btn-add:hover {
+            background: #38a169;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .action-buttons button {
+            flex: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- LEFT COLUMN: Current Schema State -->
+        <div class="column">
+            <div class="panel">
+                <h2>Current Schema State</h2>
+                <p style="font-size: 0.9rem; color: #666; margin-bottom: 1rem;">
+                    Build and manage your schema
+                </p>
+
+                <div class="action-buttons">
+                    <button class="btn-add" onclick="openMainFieldModal()">+ Add Main Field</button>
+                    <button class="btn-add" onclick="openCustomTypeModal()">+ Add Custom Type</button>
+                </div>
+
+                <div class="state-view" style="max-height: 600px;">
+                    <h4>Main Fields (<span id="mainFieldsCount">0</span>)</h4>
+                    <div id="mainFieldsList"></div>
+
+                    <h4 style="margin-top: 1.5rem;">Custom Types (<span id="customTypesCount">0</span>)</h4>
+                    <div id="customTypesList"></div>
+                </div>
+
+                <hr class="divider">
+
+                <button class="btn-primary btn-large" onclick="renderSchema()">🔄 Generate Schema</button>
+                <button class="btn-danger btn-large" onclick="resetAll()">Reset All</button>
+            </div>
+        </div>
+
+        <!-- RIGHT COLUMN: Output Display -->
+        <div class="column">
+            <!-- data-cutter Model Specification JSON -->
+            <div class="panel output-section">
+                <div class="output-header">
+                    <h2>data-cutter Model Specification JSON</h2>
+                    <button class="btn-copy" onclick="copyToClipboard('schemaOutput')">Copy</button>
+                </div>
+                <pre class="code-output" id="schemaOutput">Click "Generate Schema" to see the model specification JSON</pre>
+                <button class="btn-secondary" onclick="downloadJson('schema')" style="margin-top: 1rem;">Download model_specification.json</button>
+            </div>
+
+            <!-- Model JSON Schema -->
+            <div class="panel output-section">
+                <div class="output-header">
+                    <h2>Model JSON Schema</h2>
+                    <button class="btn-copy" onclick="copyToClipboard('modelOutput')">Copy</button>
+                </div>
+                <pre class="code-output" id="modelOutput">Click "Generate Schema" to see the Pydantic model schema</pre>
+                <button class="btn-secondary" onclick="downloadJson('model')" style="margin-top: 1rem;">Download model_schema.json</button>
+            </div>
+
+            <!-- Render Status -->
+            <div id="renderStatus"></div>
+        </div>
+    </div>
+
+    <!-- Main Field Modal -->
+    <div id="mainFieldModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add Main Field</h2>
+                <button class="modal-close" onclick="closeMainFieldModal()">&times;</button>
+            </div>
+
+            <div class="form-group">
+                <label>Field Name</label>
+                <input type="text" id="fieldName" placeholder="e.g., items">
+            </div>
+
+            <div class="row">
+                <div class="form-group">
+                    <label>Dimension</label>
+                    <select id="fieldDim">
+                        <option value="0">0 (scalar)</option>
+                        <option value="1">1 (array)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Data Type</label>
+                    <select id="fieldDtype">
+                        <option value="string">string</option>
+                        <option value="integer">integer</option>
+                        <option value="number">number</option>
+                        <option value="boolean">boolean</option>
+                        <option value="bbox">bbox</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="checkbox-group">
+                <input type="checkbox" id="fieldOptional">
+                <label for="fieldOptional" style="margin-bottom: 0;">Optional</label>
+            </div>
+
+            <div class="form-group">
+                <label>Description (optional)</label>
+                <textarea id="fieldDescription" placeholder="Field description"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Allowed Values (comma-separated, optional)</label>
+                <input type="text" id="fieldAllowedValues" placeholder="e.g., value1, value2, value3">
+            </div>
+
+            <button class="btn-primary" style="width: 100%; padding: 1rem;" onclick="addMainField()">Add Field</button>
+            <div id="fieldStatus"></div>
+        </div>
+    </div>
+
+    <!-- Custom Type Modal -->
+    <div id="customTypeModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add Custom Type</h2>
+                <button class="modal-close" onclick="closeCustomTypeModal()">&times;</button>
+            </div>
+
+            <div class="form-group">
+                <label>Type Name</label>
+                <input type="text" id="customTypeName" placeholder="e.g., Table, Person, Item">
+            </div>
+
+            <hr class="divider">
+
+            <h3 style="font-size: 1rem; margin-bottom: 1rem; color: #764ba2;">Add Fields to Type</h3>
+
+            <div class="form-group">
+                <label>Field Name</label>
+                <input type="text" id="customFieldName" placeholder="e.g., document_no">
+            </div>
+
+            <div class="row">
+                <div class="form-group">
+                    <label>Dimension</label>
+                    <select id="customFieldDim">
+                        <option value="0">0 (scalar)</option>
+                        <option value="1">1 (array)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Data Type</label>
+                    <select id="customFieldDtype">
+                        <option value="string">string</option>
+                        <option value="integer">integer</option>
+                        <option value="number">number</option>
+                        <option value="boolean">boolean</option>
+                        <option value="bbox">bbox</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="checkbox-group">
+                <input type="checkbox" id="customFieldOptional">
+                <label for="customFieldOptional" style="margin-bottom: 0;">Optional</label>
+            </div>
+
+            <div class="form-group">
+                <label>Description (optional)</label>
+                <textarea id="customFieldDescription" placeholder="Field description"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Allowed Values (comma-separated, optional)</label>
+                <input type="text" id="customFieldAllowedValues" placeholder="e.g., a, b, c">
+            </div>
+
+            <!-- Advanced Constraints -->
+            <div class="accordion">
+                <div class="accordion-header" onclick="toggleAccordion('stringConstraints')">
+                    <span>String Constraints</span>
+                    <span>▼</span>
+                </div>
+                <div class="accordion-content" id="stringConstraints">
+                    <div class="form-group">
+                        <label>Format</label>
+                        <select id="customFieldFormat">
+                            <option value="">-- None --</option>
+                            <option value="email">email</option>
+                            <option value="date-time">date-time</option>
+                            <option value="uri">uri</option>
+                            <option value="uuid">uuid</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Regex Pattern</label>
+                        <input type="text" id="customFieldPattern" placeholder="e.g., ^[A-Za-z0-9 _-]{1,100}$">
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion">
+                <div class="accordion-header" onclick="toggleAccordion('numberConstraints')">
+                    <span>Number Constraints</span>
+                    <span>▼</span>
+                </div>
+                <div class="accordion-content" id="numberConstraints">
+                    <div class="row">
+                        <div class="form-group">
+                            <label>Minimum</label>
+                            <input type="text" id="customFieldMinimum" placeholder="e.g., 0">
+                        </div>
+                        <div class="form-group">
+                            <label>Maximum</label>
+                            <input type="text" id="customFieldMaximum" placeholder="e.g., 100">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion">
+                <div class="accordion-header" onclick="toggleAccordion('arrayConstraints')">
+                    <span>Array Constraints</span>
+                    <span>▼</span>
+                </div>
+                <div class="accordion-content" id="arrayConstraints">
+                    <div class="row">
+                        <div class="form-group">
+                            <label>Min Items</label>
+                            <input type="text" id="customFieldMinItems" placeholder="e.g., 1">
+                        </div>
+                        <div class="form-group">
+                            <label>Max Items</label>
+                            <input type="text" id="customFieldMaxItems" placeholder="e.g., 10">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn-primary" onclick="addFieldToStaging()" style="margin-top: 1rem; width: 100%; padding: 1rem;">Add Field to Type</button>
+            <div id="customFieldStatus"></div>
+
+            <hr class="divider">
+
+            <h3 style="font-size: 1rem; margin-bottom: 1rem; color: #764ba2;">Fields in This Type</h3>
+            <div id="currentTypeFieldsList" style="background: #f8f9fa; border: 1px solid #e2e8f0; border-radius: 4px; padding: 1rem; min-height: 100px; max-height: 300px; overflow-y: auto;">
+                <div class="empty-state" style="padding: 1rem;">Enter a type name and add fields to see them here</div>
+            </div>
+
+            <button class="btn-add" onclick="saveCustomType()" style="margin-top: 1rem; width: 100%; padding: 1rem; font-size: 1rem;">
+                <span id="saveTypeButtonText">Add Type</span>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // State management
+        let schemaState = {
+            type: "structured",
+            definition: {
+                name: "Result",
+                fields: [],
+                custom_dtypes: []
+            }
+        };
+
+        let lastRenderedSchema = null;
+        let lastRenderedModel = null;
+
+        // Staging area for custom type being created/edited
+        let stagingType = {
+            name: '',
+            fields: [],
+            isEditing: false,
+            originalIndex: -1
+        };
+
+        // Modal control functions
+        function openMainFieldModal() {
+            document.getElementById('mainFieldModal').classList.add('active');
+        }
+
+        function closeMainFieldModal() {
+            document.getElementById('mainFieldModal').classList.remove('active');
+        }
+
+        function openCustomTypeModal() {
+            // Reset staging area for new type
+            stagingType = {
+                name: '',
+                fields: [],
+                isEditing: false,
+                originalIndex: -1
+            };
+            clearCustomTypeForm();
+            document.getElementById('saveTypeButtonText').textContent = 'Add Type';
+            document.getElementById('customTypeModal').classList.add('active');
+            updateCurrentTypeFieldsList();
+        }
+
+        function openEditCustomTypeModal(typeIndex) {
+            const customType = schemaState.definition.custom_dtypes[typeIndex];
+
+            // Load type into staging area
+            stagingType = {
+                name: customType.name,
+                fields: JSON.parse(JSON.stringify(customType.fields)), // Deep copy
+                isEditing: true,
+                originalIndex: typeIndex
+            };
+
+            // Set the type name in the form
+            document.getElementById('customTypeName').value = customType.name;
+            document.getElementById('saveTypeButtonText').textContent = 'Update Type';
+
+            clearCustomFieldForm();
+            document.getElementById('customTypeModal').classList.add('active');
+            updateCurrentTypeFieldsList();
+        }
+
+        function closeCustomTypeModal() {
+            document.getElementById('customTypeModal').classList.remove('active');
+            clearCustomTypeForm();
+        }
+
+        function clearCustomTypeForm() {
+            document.getElementById('customTypeName').value = '';
+            clearCustomFieldForm();
+        }
+
+        function clearCustomFieldForm() {
+            document.getElementById('customFieldName').value = '';
+            document.getElementById('customFieldDescription').value = '';
+            document.getElementById('customFieldAllowedValues').value = '';
+            document.getElementById('customFieldOptional').checked = false;
+            document.getElementById('customFieldFormat').value = '';
+            document.getElementById('customFieldPattern').value = '';
+            document.getElementById('customFieldMinimum').value = '';
+            document.getElementById('customFieldMaximum').value = '';
+            document.getElementById('customFieldMinItems').value = '';
+            document.getElementById('customFieldMaxItems').value = '';
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const mainModal = document.getElementById('mainFieldModal');
+            const customModal = document.getElementById('customTypeModal');
+            if (event.target === mainModal) {
+                closeMainFieldModal();
+            }
+            if (event.target === customModal) {
+                closeCustomTypeModal();
+            }
+        }
+
+        // Helper: Show status message
+        function showStatus(elementId, message, isError = false) {
+            const el = document.getElementById(elementId);
+            el.className = `status-message ${isError ? 'status-error' : 'status-success'}`;
+            el.textContent = message;
+            setTimeout(() => {
+                el.textContent = '';
+                el.className = '';
+            }, 3000);
+        }
+
+        // Helper: Update current type fields preview in modal (uses staging area)
+        function updateCurrentTypeFieldsList() {
+            const typeName = document.getElementById('customTypeName').value.trim();
+            const currentTypeFieldsList = document.getElementById('currentTypeFieldsList');
+
+            if (!typeName) {
+                currentTypeFieldsList.innerHTML = '<div class="empty-state" style="padding: 1rem;">Enter a type name and add fields to see them here</div>';
+                return;
+            }
+
+            // Update staging type name
+            stagingType.name = typeName;
+
+            if (stagingType.fields.length === 0) {
+                currentTypeFieldsList.innerHTML = '<div class="empty-state" style="padding: 1rem;">No fields added yet. Add your first field above.</div>';
+                return;
+            }
+
+            currentTypeFieldsList.innerHTML = stagingType.fields.map((field, index) => {
+                const spec = field.specification;
+                const details = [];
+                details.push(`${spec.dtype}${spec.dim > 0 ? '[]'.repeat(spec.dim) : ''}`);
+                if (spec.optional) details.push('optional');
+                if (spec.description) details.push(`"${spec.description}"`);
+                if (spec.allowed_values) details.push(`[${spec.allowed_values.join(', ')}]`);
+                if (spec.pattern) details.push(`pattern: ${spec.pattern}`);
+                if (spec.format) details.push(`format: ${spec.format}`);
+                if (spec.minimum !== undefined) details.push(`min: ${spec.minimum}`);
+                if (spec.maximum !== undefined) details.push(`max: ${spec.maximum}`);
+                if (spec.minItems !== undefined) details.push(`minItems: ${spec.minItems}`);
+                if (spec.maxItems !== undefined) details.push(`maxItems: ${spec.maxItems}`);
+
+                return `
+                    <div style="background: white; border: 1px solid #e2e8f0; border-radius: 4px; padding: 0.7rem; margin-bottom: 0.5rem; display: flex; justify-content: space-between; align-items: start;">
+                        <div style="flex: 1;">
+                            <div style="font-weight: 600; color: #2d3748; margin-bottom: 0.2rem;">${field.name}</div>
+                            <div style="font-size: 0.85rem; color: #718096;">${details.join(' • ')}</div>
+                        </div>
+                        <button class="btn-delete" style="padding: 0.2rem 0.4rem; font-size: 0.75rem;" onclick="deleteFieldFromStaging(${index})">×</button>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Delete field from staging area
+        function deleteFieldFromStaging(fieldIndex) {
+            stagingType.fields.splice(fieldIndex, 1);
+            updateCurrentTypeFieldsList();
+        }
+
+        // Helper: Update state view
+        function updateStateView() {
+            // Update main fields
+            const mainFieldsList = document.getElementById('mainFieldsList');
+            const mainFieldsCount = document.getElementById('mainFieldsCount');
+
+            mainFieldsCount.textContent = schemaState.definition.fields.length;
+
+            if (schemaState.definition.fields.length === 0) {
+                mainFieldsList.innerHTML = '<div class="empty-state">No main fields added yet</div>';
+            } else {
+                mainFieldsList.innerHTML = schemaState.definition.fields.map((field, index) => {
+                    const spec = field.specification;
+                    const details = [];
+                    details.push(`dim: ${spec.dim}`);
+                    details.push(`dtype: ${spec.dtype}`);
+                    if (spec.optional) details.push('optional');
+                    if (spec.allowed_values) details.push(`values: [${spec.allowed_values.join(', ')}]`);
+
+                    return `
+                        <div class="state-item">
+                            <div class="state-item-content">
+                                <div class="state-item-name">${field.name}</div>
+                                <div class="state-item-details">${details.join(' • ')}</div>
+                                ${spec.description ? `<div class="state-item-details" style="font-style: italic;">${spec.description}</div>` : ''}
+                            </div>
+                            <button class="btn-delete" onclick="deleteMainField(${index})">Delete</button>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            // Update custom types
+            const customTypesList = document.getElementById('customTypesList');
+            const customTypesCount = document.getElementById('customTypesCount');
+
+            customTypesCount.textContent = schemaState.definition.custom_dtypes.length;
+
+            if (schemaState.definition.custom_dtypes.length === 0) {
+                customTypesList.innerHTML = '<div class="empty-state">No custom types created yet</div>';
+            } else {
+                customTypesList.innerHTML = schemaState.definition.custom_dtypes.map((dtype, dtypeIndex) => {
+                    const fieldsHtml = dtype.fields.length > 0
+                        ? dtype.fields.map((field, fieldIndex) => {
+                            const spec = field.specification;
+                            const details = [];
+                            details.push(`${spec.dtype}${spec.dim > 0 ? '[]'.repeat(spec.dim) : ''}`);
+                            if (spec.optional) details.push('opt');
+
+                            return `
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.3rem;">
+                                    <span>${field.name}: ${details.join(', ')}</span>
+                                    <button class="btn-delete" style="padding: 0.2rem 0.4rem; font-size: 0.75rem;" onclick="deleteCustomTypeField('${dtype.name}', ${fieldIndex})">×</button>
+                                </div>
+                            `;
+                          }).join('')
+                        : '<div style="color: #a0aec0; font-size: 0.8rem;">No fields yet</div>';
+
+                    return `
+                        <div class="state-item">
+                            <div class="state-item-content">
+                                <div class="state-item-name">${dtype.name}</div>
+                                <div class="state-item-fields">${fieldsHtml}</div>
+                            </div>
+                            <div style="display: flex; gap: 0.5rem;">
+                                <button class="btn-primary" style="padding: 0.3rem 0.6rem; font-size: 0.8rem;" onclick="openEditCustomTypeModal(${dtypeIndex})">Edit</button>
+                                <button class="btn-delete" onclick="deleteCustomType(${dtypeIndex})">Delete</button>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+        }
+
+        // Helper: Update custom type dropdown
+        function updateCustomTypeDropdown() {
+            const fieldDtypeSelect = document.getElementById('fieldDtype');
+            const customFieldDtypeSelect = document.getElementById('customFieldDtype');
+
+            // Store current selections
+            const currentMainType = fieldDtypeSelect.value;
+            const currentCustomType = customFieldDtypeSelect.value;
+
+            // Clear custom options in main field and custom field dtype dropdowns
+            const mainOptions = Array.from(fieldDtypeSelect.options).filter(opt =>
+                ['string', 'integer', 'number', 'boolean', 'bbox'].includes(opt.value)
+            );
+            fieldDtypeSelect.innerHTML = '';
+            mainOptions.forEach(opt => fieldDtypeSelect.add(opt));
+
+            const customOptions = Array.from(customFieldDtypeSelect.options).filter(opt =>
+                ['string', 'integer', 'number', 'boolean', 'bbox'].includes(opt.value)
+            );
+            customFieldDtypeSelect.innerHTML = '';
+            customOptions.forEach(opt => customFieldDtypeSelect.add(opt));
+
+            // Add custom types to both dropdowns
+            schemaState.definition.custom_dtypes.forEach(dtype => {
+                // Add to main field dtype dropdown
+                const mainOption = document.createElement('option');
+                mainOption.value = dtype.name;
+                mainOption.textContent = dtype.name;
+                fieldDtypeSelect.appendChild(mainOption);
+
+                // Add to custom field dtype dropdown
+                const customOption = document.createElement('option');
+                customOption.value = dtype.name;
+                customOption.textContent = dtype.name;
+                customFieldDtypeSelect.appendChild(customOption);
+            });
+
+            // Restore selections if still valid
+            if (Array.from(fieldDtypeSelect.options).some(opt => opt.value === currentMainType)) {
+                fieldDtypeSelect.value = currentMainType;
+            }
+            if (Array.from(customFieldDtypeSelect.options).some(opt => opt.value === currentCustomType)) {
+                customFieldDtypeSelect.value = currentCustomType;
+            }
+        }
+
+        // Delete functions
+        function deleteMainField(index) {
+            if (confirm(`Delete field "${schemaState.definition.fields[index].name}"?`)) {
+                schemaState.definition.fields.splice(index, 1);
+                updateStateView();
+            }
+        }
+
+        function deleteCustomType(index) {
+            const typeName = schemaState.definition.custom_dtypes[index].name;
+            if (confirm(`Delete custom type "${typeName}"? This will also remove any main fields using this type.`)) {
+                // Remove the custom type
+                schemaState.definition.custom_dtypes.splice(index, 1);
+
+                // Remove any main fields that use this type
+                schemaState.definition.fields = schemaState.definition.fields.filter(
+                    field => field.specification.dtype !== typeName
+                );
+
+                updateCustomTypeDropdown();
+                updateStateView();
+            }
+        }
+
+        function deleteCustomTypeField(typeName, fieldIndex) {
+            const dtype = schemaState.definition.custom_dtypes.find(dt => dt.name === typeName);
+            if (dtype) {
+                dtype.fields.splice(fieldIndex, 1);
+                updateStateView();
+            }
+        }
+
+        // Add main field
+        function addMainField() {
+            const name = document.getElementById('fieldName').value.trim();
+            const dim = parseInt(document.getElementById('fieldDim').value);
+            const dtype = document.getElementById('fieldDtype').value;
+            const optional = document.getElementById('fieldOptional').checked;
+            const description = document.getElementById('fieldDescription').value.trim();
+            const allowedValues = document.getElementById('fieldAllowedValues').value.trim();
+
+            if (!name) {
+                showStatus('fieldStatus', 'Field name is required', true);
+                return;
+            }
+
+            const field = {
+                name: name,
+                specification: {
+                    dim: dim,
+                    dtype: dtype,
+                    optional: optional
+                }
+            };
+
+            if (description) {
+                field.specification.description = description;
+            }
+
+            if (allowedValues) {
+                field.specification.allowed_values = allowedValues.split(',').map(v => v.trim());
+            }
+
+            schemaState.definition.fields.push(field);
+            updateStateView();
+            showStatus('renderStatus', `Added field: ${name}`);
+
+            // Clear form
+            document.getElementById('fieldName').value = '';
+            document.getElementById('fieldDescription').value = '';
+            document.getElementById('fieldAllowedValues').value = '';
+            document.getElementById('fieldOptional').checked = false;
+
+            // Close modal
+            closeMainFieldModal();
+        }
+
+        // Add field to staging area (not saved to schemaState yet)
+        function addFieldToStaging() {
+            const typeName = document.getElementById('customTypeName').value.trim();
+            const fieldName = document.getElementById('customFieldName').value.trim();
+            const dim = parseInt(document.getElementById('customFieldDim').value);
+            const dtype = document.getElementById('customFieldDtype').value;
+            const optional = document.getElementById('customFieldOptional').checked;
+            const description = document.getElementById('customFieldDescription').value.trim();
+            const allowedValues = document.getElementById('customFieldAllowedValues').value.trim();
+            const format = document.getElementById('customFieldFormat').value;
+            const pattern = document.getElementById('customFieldPattern').value.trim();
+            const minimum = document.getElementById('customFieldMinimum').value.trim();
+            const maximum = document.getElementById('customFieldMaximum').value.trim();
+            const minItems = document.getElementById('customFieldMinItems').value.trim();
+            const maxItems = document.getElementById('customFieldMaxItems').value.trim();
+
+            if (!typeName) {
+                showStatus('renderStatus', 'Type name is required', true);
+                return;
+            }
+
+            if (!fieldName) {
+                showStatus('renderStatus', 'Field name is required', true);
+                return;
+            }
+
+            // Update staging type name
+            stagingType.name = typeName;
+
+            const field = {
+                name: fieldName,
+                specification: {
+                    dim: dim,
+                    dtype: dtype,
+                    optional: optional
+                }
+            };
+
+            if (description) field.specification.description = description;
+            if (allowedValues) field.specification.allowed_values = allowedValues.split(',').map(v => v.trim());
+            if (format) field.specification.format = format;
+            if (pattern) field.specification.pattern = pattern;
+            if (minimum) field.specification.minimum = minimum.includes('.') ? parseFloat(minimum) : parseInt(minimum);
+            if (maximum) field.specification.maximum = maximum.includes('.') ? parseFloat(maximum) : parseInt(maximum);
+            if (minItems) field.specification.minItems = parseInt(minItems);
+            if (maxItems) field.specification.maxItems = parseInt(maxItems);
+
+            stagingType.fields.push(field);
+            updateCurrentTypeFieldsList();
+            showStatus('renderStatus', `Added field '${fieldName}' to staging`);
+
+            // Clear field form (keep type name)
+            clearCustomFieldForm();
+        }
+
+        // Save custom type from staging to schemaState
+        function saveCustomType() {
+            const typeName = document.getElementById('customTypeName').value.trim();
+
+            if (!typeName) {
+                showStatus('renderStatus', 'Type name is required', true);
+                return;
+            }
+
+            if (stagingType.fields.length === 0) {
+                showStatus('renderStatus', 'Add at least one field to the type', true);
+                return;
+            }
+
+            // Update staging type name one last time
+            stagingType.name = typeName;
+
+            if (stagingType.isEditing) {
+                // Update existing type
+                const oldTypeName = schemaState.definition.custom_dtypes[stagingType.originalIndex].name;
+
+                // Update the type
+                schemaState.definition.custom_dtypes[stagingType.originalIndex] = {
+                    name: stagingType.name,
+                    fields: stagingType.fields
+                };
+
+                // If type name changed, update any main fields that use the old type name
+                if (oldTypeName !== stagingType.name) {
+                    schemaState.definition.fields.forEach(field => {
+                        if (field.specification.dtype === oldTypeName) {
+                            field.specification.dtype = stagingType.name;
+                        }
+                    });
+                }
+
+                showStatus('renderStatus', `Updated type: ${typeName}`);
+            } else {
+                // Check if type name already exists
+                const existingType = schemaState.definition.custom_dtypes.find(dt => dt.name === typeName);
+                if (existingType) {
+                    showStatus('renderStatus', `Type "${typeName}" already exists. Use Edit to modify it.`, true);
+                    return;
+                }
+
+                // Add new type
+                schemaState.definition.custom_dtypes.push({
+                    name: stagingType.name,
+                    fields: stagingType.fields
+                });
+
+                showStatus('renderStatus', `Created type: ${typeName}`);
+            }
+
+            updateCustomTypeDropdown();
+            updateStateView();
+            closeCustomTypeModal();
+        }
+
+        // Render schema
+        async function renderSchema() {
+            try {
+                const response = await fetch('/api/render', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ schema: schemaState })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    lastRenderedSchema = data.schema_json;
+                    lastRenderedModel = data.model_schema_json;
+
+                    document.getElementById('schemaOutput').textContent = data.schema_json;
+                    document.getElementById('modelOutput').textContent = data.model_schema_json;
+
+                    showStatus('renderStatus', 'Schema rendered successfully!');
+                } else {
+                    showStatus('renderStatus', `Error: ${data.error}`, true);
+                }
+            } catch (error) {
+                showStatus('renderStatus', `Network error: ${error.message}`, true);
+            }
+        }
+
+        // Reset all
+        function resetAll() {
+            if (!confirm('Are you sure you want to reset all? This will clear all fields and custom types.')) {
+                return;
+            }
+
+            schemaState = {
+                type: "structured",
+                definition: {
+                    name: "Result",
+                    fields: [],
+                    custom_dtypes: []
+                }
+            };
+
+            updateCustomTypeDropdown();
+            updateStateView();
+            document.getElementById('schemaOutput').textContent = 'Click "Render Schema" to generate output_schema.json';
+            document.getElementById('modelOutput').textContent = 'Click "Render Schema" to generate the Pydantic model schema';
+            lastRenderedSchema = null;
+            lastRenderedModel = null;
+
+            showStatus('renderStatus', 'Reset complete');
+        }
+
+        // Copy to clipboard
+        function copyToClipboard(elementId) {
+            const el = document.getElementById(elementId);
+            const text = el.textContent;
+
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Copied to clipboard!');
+            }).catch(err => {
+                alert('Failed to copy: ' + err);
+            });
+        }
+
+        // Download JSON
+        function downloadJson(type) {
+            let content, filename;
+
+            if (type === 'schema') {
+                if (!lastRenderedSchema) {
+                    alert('Please render the schema first');
+                    return;
+                }
+                content = lastRenderedSchema;
+                filename = 'output_schema.json';
+            } else if (type === 'model') {
+                if (!lastRenderedModel) {
+                    alert('Please render the schema first');
+                    return;
+                }
+                content = lastRenderedModel;
+                filename = 'model_schema.json';
+            }
+
+            const blob = new Blob([content], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // Toggle accordion
+        function toggleAccordion(id) {
+            const content = document.getElementById(id);
+            content.classList.toggle('active');
+        }
+
+        // Initialize
+        updateCustomTypeDropdown();
+        updateStateView();
+
+        // Add event listener to custom type name input to update preview
+        document.getElementById('customTypeName').addEventListener('input', function() {
+            updateCurrentTypeFieldsList();
+        });
+    </script>
+</body>
+</html>
