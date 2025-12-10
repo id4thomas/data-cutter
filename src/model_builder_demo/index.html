@@ -695,6 +695,7 @@
             <button class="btn-add" onclick="saveCustomType()" style="margin-top: 1rem; width: 100%; padding: 1rem; font-size: 1rem;">
                 <span id="saveTypeButtonText">Add Type</span>
             </button>
+            <div id="saveTypeStatus"></div>
         </div>
     </div>
 
@@ -1073,12 +1074,18 @@
             const maxItems = document.getElementById('customFieldMaxItems').value.trim();
 
             if (!typeName) {
-                showStatus('renderStatus', 'Type name is required', true);
+                showStatus('customFieldStatus', 'Type name is required', true);
                 return;
             }
 
             if (!fieldName) {
-                showStatus('renderStatus', 'Field name is required', true);
+                showStatus('customFieldStatus', 'Field name is required', true);
+                return;
+            }
+
+            // Check for recursive type reference (type cannot contain itself)
+            if (dtype === typeName) {
+                showStatus('customFieldStatus', `Error: Type "${typeName}" cannot contain itself recursively`, true);
                 return;
             }
 
@@ -1105,7 +1112,7 @@
 
             stagingType.fields.push(field);
             updateCurrentTypeFieldsList();
-            showStatus('renderStatus', `Added field '${fieldName}' to staging`);
+            showStatus('customFieldStatus', `Added field '${fieldName}'`, false);
 
             // Clear field form (keep type name)
             clearCustomFieldForm();
@@ -1116,12 +1123,12 @@
             const typeName = document.getElementById('customTypeName').value.trim();
 
             if (!typeName) {
-                showStatus('renderStatus', 'Type name is required', true);
+                showStatus('saveTypeStatus', 'Type name is required', true);
                 return;
             }
 
             if (stagingType.fields.length === 0) {
-                showStatus('renderStatus', 'Add at least one field to the type', true);
+                showStatus('saveTypeStatus', 'Add at least one field to the type', true);
                 return;
             }
 
@@ -1147,12 +1154,15 @@
                     });
                 }
 
+                updateCustomTypeDropdown();
+                updateStateView();
+                closeCustomTypeModal();
                 showStatus('renderStatus', `Updated type: ${typeName}`);
             } else {
                 // Check if type name already exists
                 const existingType = schemaState.definition.custom_dtypes.find(dt => dt.name === typeName);
                 if (existingType) {
-                    showStatus('renderStatus', `Type "${typeName}" already exists. Use Edit to modify it.`, true);
+                    showStatus('saveTypeStatus', `Type "${typeName}" already exists. Use Edit to modify it.`, true);
                     return;
                 }
 
@@ -1162,12 +1172,11 @@
                     fields: stagingType.fields
                 });
 
+                updateCustomTypeDropdown();
+                updateStateView();
+                closeCustomTypeModal();
                 showStatus('renderStatus', `Created type: ${typeName}`);
             }
-
-            updateCustomTypeDropdown();
-            updateStateView();
-            closeCustomTypeModal();
         }
 
         // Render schema
