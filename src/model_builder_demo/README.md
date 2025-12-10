@@ -1,4 +1,5 @@
 # Data-Cutter Demo - Output Schema Builder
+<img src="../../assets/model_builder_demo.png" width=100% height=100%>
 
 Interactive web interface for creating `output_schema.json` files with visual schema design and live JSON generation.
 
