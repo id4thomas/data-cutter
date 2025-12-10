@@ -11,6 +11,7 @@ class Settings(BaseSettings):
     
     VLM_BASE_URL: str
     VLM_API_KEY: str
+    VLM_PROVIDER: str
     VLM_MODEL: str
     
 @lru_cache

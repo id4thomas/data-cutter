@@ -3,10 +3,8 @@ import os
 from typing import Any, Dict, Optional
 import yaml
 
-from pydantic import BaseModel
-
 from data_cutter.types.generation_config import GenerationConfig
-from data_cutter.types.prompt import PromptTemplate
+from data_cutter.types.prompt_template import PromptTemplate
 from data_cutter.types.output_schema import (
     OutputSchema,
     PlainOutputSchema,

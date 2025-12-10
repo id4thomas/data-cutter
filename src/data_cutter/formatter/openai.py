@@ -1,6 +1,6 @@
 from typing import Any, Dict, List, Union
 
-from data_cutter.types.prompt.template import (
+from data_cutter.types.prompt_template import (
     TextTemplate,
     ImageTemplate,
     IterableTemplate,

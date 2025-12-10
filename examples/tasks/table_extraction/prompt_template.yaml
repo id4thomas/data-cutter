@@ -36,7 +36,7 @@ messages:
             input_variable: "pages"
             items:
               - type: "text"
-                input_variable: ["page_no"]
+                input_variables: ["page_no"]
                 value: "Page {page_no}"
               - type: "image"
                 input_name: "page_image"
